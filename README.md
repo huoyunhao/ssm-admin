@@ -84,7 +84,7 @@ ssm-admin是基于`ssm` 前端采用`vue-element-admin`组件的快速开发脚�
 
 ## 5 项目说明
 
- [后端地址](https://www.jianshu.com/p/ea1fe005848c)
+ [地址](https://www.jianshu.com/p/ea1fe005848c)
 ------
 
 ## 6 项目地址
