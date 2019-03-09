@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!--数据库驱动,最好不要有中文字符,不然会找不到-->
+    <classPathEntry location="target/aies/WEB-INF/lib/mysql-connector-java-5.1.32.jar" />
+
+
+    <context id="DB2Tables"    targetRuntime="MyBatis3">
+
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+        <!--数据库链接地址账号密码jdbc:mysql://120.79.250.60/java_gcsj_ssm-->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://120.79.250.60:3306/espss" userId="root" password="123456">
+        </jdbcConnection>
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+        <!--生成Model类存放位置-->
+        <javaModelGenerator targetPackage="cc.aies.web.bea" targetProject="./src/main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+        <!--生成映射文件存放位置-->
+        <sqlMapGenerator targetPackage="mapper" targetProject="./src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+        <!--生成DaoMapper类存放位置-->
+      <!--  <javaClientGenerator type="XMLMAPPER" targetPackage="cc.aies.web.dao" targetProject="./src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>-->
+        <!--生成对应表及类名,需要记住的一点是逆向工程无法生成关联关系,只能生成单表操作-->
+      <!--  <table tableName="t_class"
+               domainObjectName="Class"
+        ></table>
+        <table tableName="t_company"
+               domainObjectName="Company"
+        ></table>-->
+       <!-- <table tableName="t_cutting"
+               domainObjectName="Cutting"
+        ></table>
+
+        <table tableName="t_cutting_score_point"
+               domainObjectName="CuttingScorePoint"
+        ></table>-->
+        <!--
+                <table tableName="t_dictionary"
+                       domainObjectName="Dictionary"
+                ></table>
+                <table tableName="t_exam"
+                       domainObjectName="Exam"
+                ></table>
+                <table tableName="t_excel_save"
+                       domainObjectName="ExcleSave"
+                ></table>-->
+      <!-- <table tableName="t_fragment"
+               domainObjectName="Fragment"
+        &gt;</table>-->
+
+<!--
+        <table tableName="t_grade"
+               domainObjectName="Grade"
+        ></table>
+
+        <table tableName="t_log"
+               domainObjectName="Log"
+        ></table>
+
+        <table tableName="t_menu"
+               domainObjectName="Menu"
+        ></table>
+
+        <table tableName="t_package"
+               domainObjectName="Package"
+        ></table>
+        <table tableName="t_paper"
+               domainObjectName="Paper"
+        ></table>
+        <table tableName="t_perm_role"
+               domainObjectName="PermRole"
+        ></table>
+        <table tableName="t_perm_user"
+               domainObjectName="PermUser"
+        ></table>
+
+
+        <table tableName="t_role_menu"
+               domainObjectName="RoleMenu"
+        ></table>
+        <table tableName="t_role_user"
+               domainObjectName="RoleUser"
+        ></table>
+        <table tableName="t_score"
+               domainObjectName="Score"
+        ></table>
+
+        <table tableName="t_stu_cutting"
+               domainObjectName="StuCutting"
+        ></table>
+        <table tableName="t_stu_cutting_score_point"
+               domainObjectName="StuCuttingScorePoint"
+        ></table>
+        <table tableName="t_stu_cutting_temp_user"
+               domainObjectName="StuCuttingTempUser"
+        ></table>
+        <table tableName="t_stu_fragment"
+               domainObjectName="StuFragment"
+        ></table>
+        <table tableName="t_stu_select_detail"
+               domainObjectName="StuSelectDetail"
+        ></table>
+        -->
+       <table tableName="admin_info"
+               domainObjectName="contentInfo"
+        ></table>
+
+        <!--<table tableName="t_stu_paper_header"
+               domainObjectName="StuPaperHeader"
+        ></table>-->
+<!--
+        <table tableName="t_student"
+               domainObjectName="Student"
+        ></table>
+        <table tableName="t_student_exam"
+               domainObjectName="StudentExam"
+        ></table>
+        <table tableName="t_subject"
+               domainObjectName="Subject"
+        ></table>
+
+        <table tableName="t_temp_user_cutting"
+               domainObjectName="TempUserCutting"
+        ></table>
+        <table tableName="t_temp_user_cutting_total"
+               domainObjectName="TempUserCuttingTotal"
+        ></table>
+
+        <table tableName="t_temp_userinfo"
+               domainObjectName="TempUserInfo"
+        ></table>
+
+        <table tableName="t_templet"
+               domainObjectName="Templet"
+        ></table>
+-->
+        <!--<table tableName="t_templet_papar_header"-->
+               <!--domainObjectName="TempletPaperHeader"-->
+        <!--&gt;</table>-->
+<!--
+        <table tableName="t_templet_select"
+               domainObjectName="TempletSelect"
+        ></table>
+-->
+       <!-- <table tableName="t_templet_select_block"
+               domainObjectName="TempletSelectBlock"
+        ></table>-->
+
+        <!--<table tableName="t_studente"
+               domainObjectName="Studente"
+        ></table>-->
+
+        <!--
+        <table tableName="t_user_role"
+               domainObjectName="UserRole"
+        ></table>
+        <table tableName="t_user_subject"
+               domainObjectName="UserSubject"
+        ></table>
+            -->
+        <table tableName="t_stu_cutting_temp_user"
+               domainObjectName="StuCuttingTempUser"
+        ></table>
+
+        <table tableName="t_stu_cutting_score_point"
+               domainObjectName="StuCuttingScorePoint"
+        ></table>
+    </context>
+</generatorConfiguration>

@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+    <!--自动扫描包 use-default-filters="false"防止事务失效-->
+    <context:component-scan base-package="cc.aies.web" use-default-filters="true">
+        <!--除了控制器不扫描，其它全部扫描-->
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+    </context:component-scan>
+
+    <context:property-placeholder location="classpath:db.properties" ignore-unresolvable="true"/>
+    <bean id="pooledDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="jdbcUrl" value="${jdbc.jdbcUrl}"></property>
+        <property name="driverClass" value="${jdbc.driverClass}"></property>
+        <property name="user" value="${jdbc.user}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+
+        <!-- c3p0连接池的私有属性 -->
+        <property name="maxPoolSize" value="${jdbc.maxPoolSize}"/>
+        <property name="minPoolSize" value="${jdbc.minPoolSize}"/>
+        <!-- 关闭连接后不自动commit -->
+        <property name="autoCommitOnClose" value="false"/>
+        <!-- 获取连接超时时间 -->
+        <property name="checkoutTimeout" value="${jdbc.checkoutTimeout}"/>
+        <!-- 当获取连接失败重试次数 -->
+        <property name="acquireRetryAttempts" value="${jdbc.acquireRetryAttempts}"/>
+        <!--<property name="initialPoolSize" value="${jdbc.initialPoolSize=10}"/>-->
+    </bean>
+
+    <!--Spring与mybatis集成-->
+
+    <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--配置数据源-->
+        <property name="dataSource" ref="pooledDataSource"></property>
+        <!--指定mybatis配置文件位置-->
+        <property name="configLocation" value="classpath:spring-mybatis.xml"></property>
+        <!--指定mapper文件地址-->
+        <property name="mapperLocations" value="classpath:mapper/*.xml"></property>
+    </bean>
+
+    <!--Spring与redis集成-->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <!--最大空闲数-->
+        <property name="maxIdle" value="500"/>
+        <!--最大连接数-->
+        <property name="maxTotal" value="1000"/>
+
+        <!--最大等待时间-->
+        <property name="maxWaitMillis" value="20000"/>
+    </bean>
+
+    <!--配置redis连接工厂-->
+    <context:property-placeholder location="classpath:redis.properties" ignore-unresolvable="true"/>
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <property name="hostName" value="${redis.hostName}"/>
+        <property name="port" value="${redis.port}"/>
+        <!--<property name="password" value=""/>-->
+        <property name="poolConfig" ref="jedisPoolConfig"/>
+    </bean>
+
+    <!--配置redis序列化器-->
+    <bean id="jdkSerializationRedisSerializer"
+          class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer"></bean>
+    <bean id="stringSerializer" class="org.springframework.data.redis.serializer.StringRedisSerializer"></bean>
+    <!--配置redisTemplate-->
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+        <property name="defaultSerializer" ref="stringSerializer"/>
+        <property name="keySerializer" ref="stringSerializer"/>
+        <property name="valueSerializer" ref="stringSerializer"/>
+        <property name="hashKeySerializer" ref="stringSerializer"/>
+        <property name="hashValueSerializer" ref="stringSerializer"/>
+        <property name="connectionFactory" ref="jedisConnectionFactory"/>
+    </bean>
+
+    <!--事务管理器 mybatis的-->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="pooledDataSource"/>
+        <property name="globalRollbackOnParticipationFailure" value="false"/>
+    </bean>
+    <!--事务增强  add   update delete 有异常 就自动回滚   get方法只允许读取-->
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <tx:method name="add*"
+                       isolation="REPEATABLE_READ" rollback-for="Exception"/>
+            <tx:method name="update*"
+                       isolation="REPEATABLE_READ" rollback-for="Exception"/>
+            <tx:method name="delete*"
+                       isolation="REPEATABLE_READ" rollback-for="Exception"/>
+            <!--<tx:method name="get*"
+                       isolation="REPEATABLE_READ" read-only=""/>-->
+            <tx:method name="*"
+                       isolation="REPEATABLE_READ" propagation="NOT_SUPPORTED"/>
+        </tx:attributes>
+    </tx:advice>
+    <!--配置aop自动代理-->
+    <!--切入点  扫描execution(* com.shiro.test.mvc.service..*(..))  切入事务-->
+    <!--事物切面-->
+    <aop:config proxy-target-class="true">
+        <aop:pointcut
+                expression="execution(* cc.aies.web.service ..*(..))" id="point"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="point"/>
+    </aop:config>
+    <!-- 配置扫描器，将mybatis接口的实现加入到ioc容器中 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--扫描所有dao接口的实现，加入到ioc容器中 -->
+        <property name="basePackage" value="cc.aies.web.dao"></property>
+    </bean>
+
+
+    <!--配置MultipartReaolver  文件上传的一些相关配置-->
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8"></property>
+        <property name="maxInMemorySize" value="10240000"></property>
+    </bean>
+
+
+    <context:property-placeholder location="classpath:email.properties" ignore-unresolvable="true"/>
+    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+        <!-- 163邮箱,smtp.163.com -->
+        <!-- admin@163.com 用户名:admin 密码:xxx -->
+        <!-- smtp邮件发送协议 -->
+        <!-- pop3收邮件协议 -->
+        <property name="host" value="${email.host}"/>
+        <property name="username" value="${email.username}"/>
+        <property name="password" value="${email.password}"/>
+        <property name="javaMailProperties">
+            <props>
+                <!-- 必须进行授权认证， -->
+                <prop key="mail.smtp.auth">true</prop>
+                <!-- SMTP加密方式:连接到一个TLS保护连接 -->
+                <prop key="mail.smtp.starttls.enable">true</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!--配置自动执行程序-->
+
+
+    <!-- 定义目标bean和bean中的方法 -->
+    <bean id="timedTask" class="cc.aies.web.utils.TimedTask"/>
+    <bean id="SpringQtzJobMethod" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="timedTask"/>
+        </property>
+        <property name="targetMethod">  <!-- 要执行的方法名称 -->
+            <value>logDelete</value>
+        </property>
+    </bean>
+    <!-- ======================== 调度触发器 ======================== -->
+    <bean id="CronTriggerBean" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="SpringQtzJobMethod"></property>
+        <!--表达式为  :  秒_分_小时_日_月_[周]_[年] -->
+        <property name="cronExpression" value="0 0 0 * * ?"></property>
+    </bean>
+
+    <!-- ======================== 调度工厂 ======================== -->
+    <bean id="SpringJobSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="CronTriggerBean"/>
+            </list>
+        </property>
+    </bean>
+    <!--下面是shiro的一些配置-->
+
+    <!--记住我的cookie-->
+    <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="rememberMyShiro"/>
+        <property name="httpOnly" value="true"/>
+        <property name="maxAge" value="2592000"/>
+    </bean>
+    <!---->
+    <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+        <property name="cookie" ref="rememberMeCookie"/>
+        <!--16,24,32的base64-->
+        <property name="cipherKey" value="#{T(org.apache.shiro.codec.Base64).decode('MTIzNDU2Nzg5MGFiY2RlZg==')}"/>
+    </bean>
+    <!--自定义realm-->
+    <bean id="myShiroRealm" class="cc.aies.web.fifter.MyShiroRealm"/>
+    <!--缓存管理器-->
+    <bean id="cacheManager" class="org.apache.shiro.cache.MemoryConstrainedCacheManager"/>
+    <!--将realm引入securityManager-->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <!--<property name="realm" ref="iniRealm"/>-->
+        <property name="realm" ref="myShiroRealm"/>
+        <property name="cacheManager" ref="cacheManager"/>
+        <property name="rememberMeManager" ref="rememberMeManager"/>
+    </bean>
+
+
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+    <bean id="shiroFilter" class="cc.aies.web.fifter.MyShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="loginUrl" value="/loginerror"/>
+        <property name="successUrl" value=""/>
+        <property name="unauthorizedUrl" value=""/>
+        <property name="filterChainDefinitions">
+            <!--
+           配置哪些页面需要受保护.
+           以及访问这些页面需要的权限.
+           1). anon 可以被匿名访问
+           2). authc 必须认证(即登录)后才可能访问的页面.
+           3). logout 登出.
+           4). roles 角色过滤器
+           /admin?=authc      表示可以请求以admin开头的字符串，如xxx/adminfefe，但无法匹配多个，即xxx/admindf/admin是不行的
+            /admin*=authc      表示可以匹配零个或者多个字符，如/admin，/admin1，/admin123，但是不能匹配/admin/abc这种
+            /admin/**=authc      表示可以匹配零个或者多个路径，如/admin，/admin/ad/adfdf等
+       -->
+            <value>
+                /user/permlogin=anon
+                /user/permloginout=anon
+                /user/signup=anon
+                /authcode=anon
+            </value>
+        </property>
+        <property name="filters">
+            <map>
+                <entry key="roles">
+                    <bean class="cc.aies.web.fifter.MyShiroFilter"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+
+</beans>

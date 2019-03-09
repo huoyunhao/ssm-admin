@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+    <!--SpringMVC的配置文件，包含网站跳转逻辑的控制，配置  -->
+    <context:component-scan base-package="cc.aies.web" >
+        <!--扫描控制器。  -->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
+
+    </context:component-scan>
+    <!--配置日志记录切面-->
+    <aop:aspectj-autoproxy expose-proxy="true"></aop:aspectj-autoproxy>
+    <!--配置视图解析器，方便页面返回  -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+    <!--对静态资源的解析-->
+    <mvc:default-servlet-handler/>
+
+    <!-- 在实际开发中通常都需配置 mvc:annotation-driven标签,这个标签是开启注解 -->
+    <mvc:annotation-driven></mvc:annotation-driven>
+    <!-- 拦截器 -->
+    <mvc:interceptors>
+        <!-- 多个拦截器，顺序执行 -->
+        <!--登录拦截-->
+        <mvc:interceptor>
+            <!--进行拦截的路径-->
+            <mvc:mapping path="/**"/>
+            <!--不进行拦截的路径-->
+            <mvc:exclude-mapping path="/user/login"/>
+            <mvc:exclude-mapping path="/upload/**"/>
+            <bean class="cc.aies.web.utils.BaseInterceptor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+    <!-- 定义文件上传解析器 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- 设定默认编码 -->
+        <property name="defaultEncoding" value="UTF-8" />
+        <!-- 设定文件上传的最大值100MB，100*1024*1024 -->
+        <property name="maxUploadSize" value="104857600" />
+        <property name="maxInMemorySize" value="4096" />
+    </bean>
+
+    <!--配置shiro-->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor">
+
+     </bean>
+     <!--<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"-->
+           <!--depends-on="lifecycleBeanPostProcessor">-->
+     <!--</bean>-->
+    <aop:config proxy-target-class="true"></aop:config>
+    <!--处理时间-->
+    <mvc:annotation-driven>
+        <!-- 处理responseBody 里面日期类型 -->
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="objectMapper">
+                    <bean class="com.fasterxml.jackson.databind.ObjectMapper">
+                        <property name="dateFormat">
+                            <bean class="java.text.SimpleDateFormat">
+                                <constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss" />
+                            </bean>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+
+</beans>

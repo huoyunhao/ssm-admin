@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.aies.web.dao.CompanyMapper">
+  <resultMap id="BaseResultMap" type="cc.aies.web.beans.Company">
+    <id column="company_id" jdbcType="CHAR" property="companyId" />
+    <result column="company_name" jdbcType="CHAR" property="companyName" />
+    <result column="parent_id" jdbcType="CHAR" property="parentId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="company_num" jdbcType="VARCHAR" property="companyNum" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    company_id, company_name, parent_id, create_time, remark, company_num
+  </sql>
+  <select id="selectByExample" parameterType="cc.aies.web.beans.CompanyExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_company
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_company
+    where company_id = #{companyId,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_company
+    where company_id = #{companyId,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="cc.aies.web.beans.CompanyExample">
+    delete from t_company
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="cc.aies.web.beans.Company">
+    insert into t_company (company_id, company_name, parent_id,
+      create_time, remark, company_num
+      )
+    values (#{companyId,jdbcType=CHAR}, #{companyName,jdbcType=CHAR}, #{parentId,jdbcType=CHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{companyNum,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cc.aies.web.beans.Company">
+    insert into t_company
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="companyNum != null">
+        company_num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="companyId != null">
+        #{companyId,jdbcType=CHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=CHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="companyNum != null">
+        #{companyNum,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="cc.aies.web.beans.CompanyExample" resultType="java.lang.Long">
+    select count(*) from t_company
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_company
+    <set>
+      <if test="record.companyId != null">
+        company_id = #{record.companyId,jdbcType=CHAR},
+      </if>
+      <if test="record.companyName != null">
+        company_name = #{record.companyName,jdbcType=CHAR},
+      </if>
+      <if test="record.parentId != null">
+        parent_id = #{record.parentId,jdbcType=CHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.remark != null">
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.companyNum != null">
+        company_num = #{record.companyNum,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_company
+    set company_id = #{record.companyId,jdbcType=CHAR},
+    company_name = #{record.companyName,jdbcType=CHAR},
+    parent_id = #{record.parentId,jdbcType=CHAR},
+    create_time = #{record.createTime,jdbcType=TIMESTAMP},
+    remark = #{record.remark,jdbcType=VARCHAR},
+    company_num = #{record.companyNum,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="cc.aies.web.beans.Company">
+    update t_company
+    <set>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=CHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="companyNum != null">
+        company_num = #{companyNum,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where company_id = #{companyId,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cc.aies.web.beans.Company">
+    update t_company
+    set company_name = #{companyName,jdbcType=CHAR},
+      parent_id = #{parentId,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR},
+      company_num = #{companyNum,jdbcType=VARCHAR}
+    where company_id = #{companyId,jdbcType=CHAR}
+  </update>
+
+  <select id="getListByParentId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_company
+    where parent_id = #{parentId,jdbcType=CHAR} order by company_id asc
+  </select>
+  <select id="getCompany" resultType="cc.aies.web.beans.Company">
+    SELECT  * from t_company
+  </select>
+  <select id="getCompanyById" resultType="cc.aies.web.beans.Company">
+    select * from t_company where company_id=#{companyId} or t_company.parent_id=#{companyId}
+  </select>
+  <select id="getCompantByParentId" resultType="cc.aies.web.beans.Company">
+   select * from t_company where parent_id=#{id}
+  </select>
+  <select id="getCompanySonId" resultType="java.lang.String">
+      select company_id from t_company where parent_id=#{id}
+  </select>
+  <select id="getAllComapnyWithNUll" resultType="cc.aies.web.beans.Company">
+    select * from t_company where parent_id=""
+  </select>
+  <select id="getSchoolByCompanyId" resultType="cc.aies.web.beans.Company">
+    select * from t_company where (parent_id is not null and parent_id not in (''))
+                              and (company_id = #{companyId} or parent_id = #{companyId})
+  </select>
+  <select id="selectSonNode" resultType="cc.aies.web.beans.Company">
+      SELECT * from  t_company where t_company.parent_id=#{id}
+  </select>
+  <select id="getCompanyNameByCompanyId" resultType="java.lang.String">
+    SELECT t_company.company_name from t_company where t_company.company_id=#{companyId}
+  </select>
+
+</mapper>

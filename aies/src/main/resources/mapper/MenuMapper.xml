@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cc.aies.web.dao.MenuMapper">
+    <resultMap id="BaseResultMap" type="cc.aies.web.beans.Menu">
+        <id column="menu_id" jdbcType="VARCHAR" property="menuId"/>
+        <result column="menu_name" jdbcType="VARCHAR" property="menuName"/>
+        <result column="menu_url" jdbcType="VARCHAR" property="menuUrl"/>
+        <result column="menu_remark" jdbcType="VARCHAR" property="menuRemark"/>
+        <result column="menu_parent_id" jdbcType="VARCHAR" property="menuParentId"/>
+        <result column="path" jdbcType="VARCHAR" property="path"/>
+    </resultMap>
+
+    <resultMap id="menuPerms" type="cc.aies.web.beans.MenuPermission">
+        <id property="id" column="menu_id"/>
+        <result property="url" column="menu_url"/>
+        <collection property="roleIds" column="role_id" ofType="String">
+            <constructor>
+                <arg column="role_id"/>
+            </constructor>
+        </collection>
+    </resultMap>
+
+    <!--得到角色所对应的菜单id-->
+    <select id="getMenuPerms" resultMap="menuPerms">
+        select M.menu_id,M.menu_url ,R.role_id
+        from t_menu M
+        LEFT JOIN t_role_menu R ON R.menu_id=M.menu_id
+    </select>
+    <!--得到所有的菜单列表（权限）-->
+    <select id="getAllMenu" resultType="cc.aies.web.beans.Menu">
+         select menu_name as name,menu_id,menu_parent_id,menu_url , path,menu_icon as iconCls,menu_eng_name as component
+        from t_menu
+    </select>
+    <!--通过用户的id得到用户的菜单-->
+    <select id="getUserMenu" parameterType="String" resultType="cc.aies.web.beans.Menu">
+    select menu_name as name,t_menu.menu_id,menu_parent_id,menu_url , path,menu_icon as iconCls,menu_eng_name as component
+        from t_user_role
+        inner join t_role_menu  on t_user_role.role_id=t_role_menu.role_id
+        inner join t_menu  on t_role_menu.menu_id=t_menu.menu_id
+        WHERE user_id=#{userId}
+        GROUP BY t_menu.menu_id
+    </select>
+    <select id="getMenuById" parameterType="String" resultMap="BaseResultMap">
+        select menu_name as name,menu_id,menu_parent_id,menu_url ,path,menu_icon as iconCls,menu_eng_name as component from t_menu where menu_id=#{id}
+    </select>
+    <insert id="addMenu" parameterType="Menu">
+        insert into t_menu (menu_id,menu_parent_id,menu_name,menu_url,menu_remark,menu_icon,menu_eng_name,path)
+         values (#{menuId},#{menuParentId},#{menuName},#{menuUrl},#{menuRemark},#{iconCls},#{component},#{path})
+    </insert>
+    <update id="updateMenu" parameterType="Menu">
+        update t_menu
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="menuParentId!=null">
+                menu_parent_id=#{menuParentId},
+            </if>
+            <if test="menuName!=null and menuName!=''">
+                menu_name=#{menuName},
+            </if>
+            <if test="menuUrl!=null" >
+                menu_url=#{menuUrl},
+            </if>
+            <if test="path!=null" >
+                path=#{path},
+            </if>
+            <if test="menuRemark!=null">
+                menu_remark=#{menuRemark},
+            </if>
+            <if test="iconCls!=null">
+                menu_icon=#{iconCls},
+            </if>
+            <if test="component!=null">
+                menu_eng_name=#{component},
+            </if>
+        </trim>
+        where  menu_id=#{menuId}
+    </update>
+    <delete id="deleteMenuById" >
+        DELETE FROM t_menu WHERE t_menu.menu_id = #{id}
+    </delete>
+    <delete id="deleteRoleMenuById">
+        DELETE FROM t_role_menu WHERE t_role_menu.menu_id = #{id}
+    </delete>
+    <select id="getRoleLogin" resultType="cc.aies.web.beans.Role">
+        SELECT * from t_perm_role where t_perm_role.role_id in
+      (SELECT role_id from t_user_role where user_id=#{userPermId})
+    </select>
+    <select id="getRoleById" resultType="cc.aies.web.beans.Role">
+        select  * from t_perm_role where role_id=#{roleId}
+    </select>
+</mapper>
+

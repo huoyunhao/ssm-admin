@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.aies.web.dao.PermUserMapper">
+  <resultMap id="BaseResultMap" type="cc.aies.web.beans.PermUser">
+    <id column="user_perm_id" jdbcType="CHAR" property="userPermId" />
+    <result column="user_account" jdbcType="VARCHAR" property="userAccount" />
+    <result column="user_pass" jdbcType="VARCHAR" property="userPass" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_gender" jdbcType="VARCHAR" property="userGender" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="user_workid" jdbcType="VARCHAR" property="userWorkid" />
+    <result column="company_id" jdbcType="CHAR" property="companyId" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="is_temp" jdbcType="VARCHAR" property="isTemp" />
+    <result column="is_subject" jdbcType="VARCHAR" property="isSubject" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    user_perm_id, user_account, user_pass, user_name, user_gender, remark, user_workid, 
+    company_id, status, is_temp, is_subject
+  </sql>
+  <select id="selectByExample" parameterType="cc.aies.web.beans.PermUserExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_perm_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_perm_user
+    where user_perm_id = #{userPermId,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_perm_user
+    where user_perm_id = #{userPermId,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="cc.aies.web.beans.PermUserExample">
+    delete from t_perm_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="cc.aies.web.beans.PermUser">
+    insert into t_perm_user (user_perm_id, user_account, user_pass, 
+      user_name, user_gender, remark, 
+      user_workid, company_id, status, 
+      is_temp, is_subject)
+    values (#{userPermId,jdbcType=CHAR}, #{userAccount,jdbcType=VARCHAR}, #{userPass,jdbcType=VARCHAR}, 
+      #{userName,jdbcType=VARCHAR}, #{userGender,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{userWorkid,jdbcType=VARCHAR}, #{companyId,jdbcType=CHAR}, #{status,jdbcType=VARCHAR}, 
+      #{isTemp,jdbcType=VARCHAR}, #{isSubject,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cc.aies.web.beans.PermUser">
+    insert into t_perm_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userPermId != null">
+        user_perm_id,
+      </if>
+      <if test="userAccount != null">
+        user_account,
+      </if>
+      <if test="userPass != null">
+        user_pass,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="userGender != null">
+        user_gender,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="userWorkid != null">
+        user_workid,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="isTemp != null">
+        is_temp,
+      </if>
+      <if test="isSubject != null">
+        is_subject,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userPermId != null">
+        #{userPermId,jdbcType=CHAR},
+      </if>
+      <if test="userAccount != null">
+        #{userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="userPass != null">
+        #{userPass,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userGender != null">
+        #{userGender,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="userWorkid != null">
+        #{userWorkid,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=CHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="isTemp != null">
+        #{isTemp,jdbcType=VARCHAR},
+      </if>
+      <if test="isSubject != null">
+        #{isSubject,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="cc.aies.web.beans.PermUserExample" resultType="java.lang.Long">
+    select count(*) from t_perm_user
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_perm_user
+    <set>
+      <if test="record.userPermId != null">
+        user_perm_id = #{record.userPermId,jdbcType=CHAR},
+      </if>
+      <if test="record.userAccount != null">
+        user_account = #{record.userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userPass != null">
+        user_pass = #{record.userPass,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userName != null">
+        user_name = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userGender != null">
+        user_gender = #{record.userGender,jdbcType=VARCHAR},
+      </if>
+      <if test="record.remark != null">
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userWorkid != null">
+        user_workid = #{record.userWorkid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.companyId != null">
+        company_id = #{record.companyId,jdbcType=CHAR},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isTemp != null">
+        is_temp = #{record.isTemp,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isSubject != null">
+        is_subject = #{record.isSubject,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_perm_user
+    set user_perm_id = #{record.userPermId,jdbcType=CHAR},
+      user_account = #{record.userAccount,jdbcType=VARCHAR},
+      user_pass = #{record.userPass,jdbcType=VARCHAR},
+      user_name = #{record.userName,jdbcType=VARCHAR},
+      user_gender = #{record.userGender,jdbcType=VARCHAR},
+      remark = #{record.remark,jdbcType=VARCHAR},
+      user_workid = #{record.userWorkid,jdbcType=VARCHAR},
+      company_id = #{record.companyId,jdbcType=CHAR},
+      status = #{record.status,jdbcType=VARCHAR},
+      is_temp = #{record.isTemp,jdbcType=VARCHAR},
+      is_subject = #{record.isSubject,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="cc.aies.web.beans.PermUser">
+    update t_perm_user
+    <set>
+      <if test="userAccount != null">
+        user_account = #{userAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="userPass != null">
+        user_pass = #{userPass,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userGender != null">
+        user_gender = #{userGender,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="userWorkid != null">
+        user_workid = #{userWorkid,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=CHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="isTemp != null">
+        is_temp = #{isTemp,jdbcType=VARCHAR},
+      </if>
+      <if test="isSubject != null">
+        is_subject = #{isSubject,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where user_perm_id = #{userPermId,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cc.aies.web.beans.PermUser">
+    update t_perm_user
+    set user_account = #{userAccount,jdbcType=VARCHAR},
+      user_pass = #{userPass,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      user_gender = #{userGender,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      user_workid = #{userWorkid,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=CHAR},
+      status = #{status,jdbcType=VARCHAR},
+      is_temp = #{isTemp,jdbcType=VARCHAR},
+      is_subject = #{isSubject,jdbcType=VARCHAR}
+    where user_perm_id = #{userPermId,jdbcType=CHAR}
+  </update>
+
+  <!-- 此后为新添加功能 -->
+
+  <select id="selectByAccount" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_perm_user
+    where user_account = #{userAccount,jdbcType=VARCHAR}
+  </select>
+  <select id="getAllUserInfo" resultType="cc.aies.web.beans.PermUser">
+      select user_perm_id, user_account, user_pass, user_name, user_gender, remark, user_workid, company_id,
+(SELECT t_company.company_name FROM t_company where t_company.company_id=t_perm_user.company_id) as company_name,
+    status, is_temp, is_subject from t_perm_user where t_perm_user.user_workid is  null
+    </select>
+  <select id="selectUserById" resultType="cc.aies.web.beans.PermUser">
+    select * from t_perm_user where user_perm_id=#{ids}
+  </select>
+  <select id="getUserRoleIds1" resultType="cc.aies.web.beans.Role">
+   select  * from t_user_role LEFT JOIN t_perm_role on t_user_role.role_id=t_perm_role.role_id where
+   user_id=#{userId}
+  </select>
+  <select id="getUserRoleIds" resultType="java.lang.String">
+    select role_id from t_user_role where user_id=#{userId}
+  </select>
+  <!--为用户分配角色-->
+  <insert id="addUserRole" parameterType="map">
+        insert into t_user_role (user_id,role_id)
+        values(#{userId},#{roleId})
+  </insert>
+  <!--删除用户的角色关联-->
+  <delete id="deleteUserRole" parameterType="String">
+    delete from t_user_role where user_id=#{userId}
+  </delete>
+  <!--删除用户通过用户的id-->
+  <delete id="deleteUserById" parameterType="String">
+        delete from t_perm_user where user_perm_id=#{userId}
+    </delete>
+  <select id="getAllteacherInfoExecl" resultType="cc.aies.web.beans.PermUser">
+
+  SELECT user_account,user_name,is_temp,cutting_name  from t_perm_user JOIN  t_cutting on t_cutting.cuting_merge_id=t_perm_user.user_workid
+   where t_perm_user.user_workid in
+  (SELECT cuting_merge_id FROM  t_cutting   where t_cutting.fragment_id   in
+  (SELECT t_fragment.fragment_id FROM t_fragment where t_fragment.templet_id
+  in (SELECT templet_id from t_templet where  t_templet.exam_id=#{examid})))
+  </select>
+  <select id="getAllUserInfoBy" resultType="cc.aies.web.beans.PermUser">
+        select  user_perm_id, user_account, user_pass, user_name, user_gender, remark, user_workid, company_id,
+(SELECT t_company.company_name FROM t_company where t_company.company_id=t_perm_user.company_id) as company_name,
+    status, is_temp, is_subject from t_perm_user where company_id=#{companyId}
+  </select>
+  <select id="getAllUserInfoByAll" resultType="cc.aies.web.beans.PermUser">
+        select user_perm_id, user_account, user_pass, user_name, user_gender, remark, user_workid, company_id,
+    (SELECT t_company.company_name FROM t_company where t_company.company_id=t_perm_user.company_id) as company_name,
+    status, is_temp, is_subject from  t_perm_user where company_id in
+    <foreach collection="list" item="companyId"  open="(" separator="," close=")">
+      #{companyId}
+    </foreach>
+  </select>
+  <select id="getAllUserInfoByCompanyId" resultType="cc.aies.web.beans.PermUser">
+    SELECT * from t_perm_user where company_id in
+  (SELECT company_id from t_company where t_company.company_id=#{companyId}
+  or t_company.parent_id=#{companyId}) and user_workid is null
+  </select>
+</mapper>

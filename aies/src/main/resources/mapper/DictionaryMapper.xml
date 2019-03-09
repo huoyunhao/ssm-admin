@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.aies.web.dao.DictionaryMapper">
+  <resultMap id="BaseResultMap" type="cc.aies.web.beans.Dictionary">
+    <id column="dictionary_id" jdbcType="CHAR" property="dictionaryId" />
+    <result column="dic_value" jdbcType="VARCHAR" property="dicValue" />
+    <result column="parent_id" jdbcType="CHAR" property="parentId" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="dic_num" jdbcType="VARCHAR" property="dicNum" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    dictionary_id, dic_value, parent_id, remark, dic_num
+  </sql>
+  <select id="selectByExample" parameterType="cc.aies.web.beans.DictionaryExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_dictionary
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_dictionary
+    where dictionary_id = #{dictionaryId,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_dictionary
+    where dictionary_id = #{dictionaryId,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="cc.aies.web.beans.DictionaryExample">
+    delete from t_dictionary
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="cc.aies.web.beans.Dictionary">
+    insert into t_dictionary (dictionary_id, dic_value, parent_id,
+      remark, dic_num)
+    values (#{dictionaryId,jdbcType=CHAR}, #{dicValue,jdbcType=VARCHAR}, #{parentId,jdbcType=CHAR},
+      #{remark,jdbcType=VARCHAR}, #{dicNum,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cc.aies.web.beans.Dictionary">
+    insert into t_dictionary
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dictionaryId != null">
+        dictionary_id,
+      </if>
+      <if test="dicValue != null">
+        dic_value,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="dicNum != null">
+        dic_num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dictionaryId != null">
+        #{dictionaryId,jdbcType=CHAR},
+      </if>
+      <if test="dicValue != null">
+        #{dicValue,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=CHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="dicNum != null">
+        #{dicNum,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="cc.aies.web.beans.DictionaryExample" resultType="java.lang.Long">
+    select count(*) from t_dictionary
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_dictionary
+    <set>
+      <if test="record.dictionaryId != null">
+        dictionary_id = #{record.dictionaryId,jdbcType=CHAR},
+      </if>
+      <if test="record.dicValue != null">
+        dic_value = #{record.dicValue,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentId != null">
+        parent_id = #{record.parentId,jdbcType=CHAR},
+      </if>
+      <if test="record.remark != null">
+        remark = #{record.remark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dicNum != null">
+        dic_num = #{record.dicNum,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_dictionary
+    set dictionary_id = #{record.dictionaryId,jdbcType=CHAR},
+      dic_value = #{record.dicValue,jdbcType=VARCHAR},
+      parent_id = #{record.parentId,jdbcType=CHAR},
+      remark = #{record.remark,jdbcType=VARCHAR},
+      dic_num = #{record.dicNum,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="cc.aies.web.beans.Dictionary">
+    update t_dictionary
+    <set>
+      <if test="dicValue != null">
+        dic_value = #{dicValue,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=CHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="dicNum != null">
+        dic_num = #{dicNum,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where dictionary_id = #{dictionaryId,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cc.aies.web.beans.Dictionary">
+    update t_dictionary
+    set dic_value = #{dicValue,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=CHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      dic_num = #{dicNum,jdbcType=VARCHAR}
+    where dictionary_id = #{dictionaryId,jdbcType=CHAR}
+  </update>
+</mapper>

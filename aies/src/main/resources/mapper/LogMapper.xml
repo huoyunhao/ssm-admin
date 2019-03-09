@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.aies.web.dao.LogMapper">
+  <resultMap id="BaseResultMap" type="cc.aies.web.beans.Log">
+    <id column="log_id" jdbcType="CHAR" property="logId" />
+    <result column="log_value" jdbcType="VARCHAR" property="logValue" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="option_persion" jdbcType="CHAR" property="optionPersion" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="user_agent" jdbcType="VARCHAR" property="userAgent" />
+    <result column="gets" jdbcType="VARCHAR" property="gets" />
+    <result column="posts" jdbcType="VARCHAR" property="posts" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    log_id, log_value, create_time, option_persion, url, user_agent, gets, posts, ip, 
+    update_time
+  </sql>
+  <select id="selectByExample" parameterType="cc.aies.web.beans.LogExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_log
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_log
+    where log_id = #{logId,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from t_log
+    where log_id = #{logId,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="cc.aies.web.beans.LogExample">
+    delete from t_log
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="cc.aies.web.beans.Log">
+    insert into t_log (log_id, log_value, create_time,
+      option_persion, url, user_agent,
+      gets, posts, ip, update_time
+      )
+    values (#{logId,jdbcType=CHAR}, #{logValue,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+      #{optionPersion,jdbcType=CHAR}, #{url,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
+      #{gets,jdbcType=VARCHAR}, #{posts,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cc.aies.web.beans.Log">
+    insert into t_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="logId != null">
+        log_id,
+      </if>
+      <if test="logValue != null">
+        log_value,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="optionPersion != null">
+        option_persion,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="userAgent != null">
+        user_agent,
+      </if>
+      <if test="gets != null">
+        gets,
+      </if>
+      <if test="posts != null">
+        posts,
+      </if>
+      <if test="ip != null">
+        ip,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="logId != null">
+        #{logId,jdbcType=CHAR},
+      </if>
+      <if test="logValue != null">
+        #{logValue,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="optionPersion != null">
+        #{optionPersion,jdbcType=CHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="userAgent != null">
+        #{userAgent,jdbcType=VARCHAR},
+      </if>
+      <if test="gets != null">
+        #{gets,jdbcType=VARCHAR},
+      </if>
+      <if test="posts != null">
+        #{posts,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="cc.aies.web.beans.LogExample" resultType="java.lang.Long">
+    select count(*) from t_log
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_log
+    <set>
+      <if test="record.logId != null">
+        log_id = #{record.logId,jdbcType=CHAR},
+      </if>
+      <if test="record.logValue != null">
+        log_value = #{record.logValue,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.optionPersion != null">
+        option_persion = #{record.optionPersion,jdbcType=CHAR},
+      </if>
+      <if test="record.url != null">
+        url = #{record.url,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userAgent != null">
+        user_agent = #{record.userAgent,jdbcType=VARCHAR},
+      </if>
+      <if test="record.gets != null">
+        gets = #{record.gets,jdbcType=VARCHAR},
+      </if>
+      <if test="record.posts != null">
+        posts = #{record.posts,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ip != null">
+        ip = #{record.ip,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_log
+    set log_id = #{record.logId,jdbcType=CHAR},
+      log_value = #{record.logValue,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      option_persion = #{record.optionPersion,jdbcType=CHAR},
+      url = #{record.url,jdbcType=VARCHAR},
+      user_agent = #{record.userAgent,jdbcType=VARCHAR},
+      gets = #{record.gets,jdbcType=VARCHAR},
+      posts = #{record.posts,jdbcType=VARCHAR},
+      ip = #{record.ip,jdbcType=VARCHAR},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="cc.aies.web.beans.Log">
+    update t_log
+    <set>
+      <if test="logValue != null">
+        log_value = #{logValue,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="optionPersion != null">
+        option_persion = #{optionPersion,jdbcType=CHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="userAgent != null">
+        user_agent = #{userAgent,jdbcType=VARCHAR},
+      </if>
+      <if test="gets != null">
+        gets = #{gets,jdbcType=VARCHAR},
+      </if>
+      <if test="posts != null">
+        posts = #{posts,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where log_id = #{logId,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cc.aies.web.beans.Log">
+    update t_log
+    set log_value = #{logValue,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      option_persion = #{optionPersion,jdbcType=CHAR},
+      url = #{url,jdbcType=VARCHAR},
+      user_agent = #{userAgent,jdbcType=VARCHAR},
+      gets = #{gets,jdbcType=VARCHAR},
+      posts = #{posts,jdbcType=VARCHAR},
+      ip = #{ip,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where log_id = #{logId,jdbcType=CHAR}
+  </update>
+
+  <!--以下是自定义sql-->
+  <!--获取全部日志-->
+
+  <select id="selectLogsOrderByCreateTime" resultMap="BaseResultMap">
+    select * from t_log order by create_time desc
+  </select>
+
+  <!--获取特定时间段的日志-->
+  <select id="selectLogsBetweenDateOrderByCreateTime" resultMap="BaseResultMap" parameterType="java.util.Date" >
+    select * from t_log where create_time between #{startTime} and #{endTime} order by create_time desc
+  </select>
+
+  <!--获取特定ip日志-->
+  <select id="selectLogsByIp" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select * from t_log where ip = #{ip} order by create_time desc
+  </select>
+</mapper>

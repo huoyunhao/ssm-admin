@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cc.aies.web.dao.RoleMapper">
+    <resultMap id="BaseResultMap" type="cc.aies.web.beans.Role">
+        <id column="role_id" jdbcType="VARCHAR" property="roleId"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    </resultMap>
+    <insert id="insertRole" parameterType="Role">
+        insert into t_perm_role (role_id,role_name,remark) values (#{roleId},#{roleName},#{remark})
+    </insert>
+    <select id="getAllRoles" resultMap="BaseResultMap">
+        select role_id,role_name,remark from t_perm_role
+    </select>
+    <select id="getRoleById" parameterType="String" resultMap="BaseResultMap">
+        select role_id,role_name,remark from  t_perm_role where role_id=#{id}
+    </select>
+    <update id="updateRole" parameterType="Role">
+        update t_perm_role
+        <trim prefix="set" suffixOverrides=",">
+            <if test="roleName!=null and roleName!=''">
+                role_name=#{roleName},
+            </if>
+            <if test="remark!=null and remark!=''">
+                remark=#{remark}
+            </if>
+        </trim>
+        where  role_id=#{roleId}
+    </update>
+    <select id="getRoleMenuIds" resultType="cc.aies.web.beans.Menu">
+      select  menu_name as name,t_menu.menu_id,menu_parent_id,menu_url , path,menu_icon as iconCls,menu_eng_name from t_role_menu LEFT JOIN t_menu on t_role_menu.menu_id=t_menu.menu_id
+        where role_id=#{id}
+    </select>
+    <!--取消角色的权限  -->
+    <delete id="deleteRoleMenu" parameterType="String">
+        delete from t_role_menu where role_id=#{roleId}
+    </delete>
+    <!--通过传入角色id和菜单id  插入角色菜单关联表  给角色赋予菜单-->
+    <insert id="addRoleMenu" parameterType="map">
+        insert into t_role_menu(role_id,menu_id)
+        values(#{roleId},#{menuId})
+    </insert>
+
+    <delete id="deleteRole">
+        DELETE FROM t_perm_role WHERE t_perm_role.role_id = #{id}
+    </delete>
+    <delete id="deleteUserRole">
+        DELETE FROM t_user_role where t_user_role.user_id=#{ids}
+    </delete>
+</mapper>
