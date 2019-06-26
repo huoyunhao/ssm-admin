@@ -41,22 +41,22 @@ public class   LoginController {
     public Msg perLogin(@RequestBody Map<String,String> map1, HttpServletRequest request){
         String valueCode=(String)request.getSession().getAttribute("strCode");
         if(valueCode==null){
-           // return Msg.fail().add("msg","请先获取验证码!");
+            return Msg.fail().add("msg","请先获取验证码!");
         }
-        if(1==1 || valueCode.equals(map1.get("value"))){
-            if (map1.get("userAccount").equals("") || map1.get("userPass").equals("")) {
-                return Msg.fail().add("msg", "账号或密码参数错误!");
-            } else {
-                PermUser permUser = new PermUser();
-                permUser.setUserAccount(map1.get("userAccount"));
-                permUser.setUserPass(map1.get("userPass"));
-                Map<String, Object> map = userLoginService.isPuserExistByAccountAndPass(permUser);
-                if (map == null) {
-                    return Msg.fail().add("msg", "用户名或密码错误！");
+            if(valueCode.equals(map1.get("value"))){
+                if (map1.get("userAccount").equals("") || map1.get("userPass").equals("")) {
+                    return Msg.fail().add("msg", "账号或密码参数错误!");
                 } else {
-                    return Msg.success().add("user", map);
+                    PermUser permUser = new PermUser();
+                    permUser.setUserAccount(map1.get("userAccount"));
+                    permUser.setUserPass(map1.get("userPass"));
+                    Map<String, Object> map = userLoginService.isPuserExistByAccountAndPass(permUser);
+                    if (map == null) {
+                        return Msg.fail().add("msg", "用户名或密码错误！");
+                    } else {
+                        return Msg.success().add("user", map);
+                    }
                 }
-            }
         }else{
             return Msg.fail().add("msg","验证码错误!");
         }
@@ -90,7 +90,6 @@ public class   LoginController {
             else{
                 return Msg.fail().add("msg","用户名已经存在");
             }
-
         }
     }
     //用户退出

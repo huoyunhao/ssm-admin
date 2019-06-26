@@ -54,7 +54,7 @@ public class MyShiroFilterFactoryBean extends ShiroFilterFactoryBean {
                     }
                     String str = sb.substring(0, sb.length() - 1);
                     //MessageFormat.format(ROLE_STRING, str)==roles[test,guest]
-                    section.put(menuPermission.getUrl(), MessageFormat.format(ROLE_STRING, str));
+                    section.put(menuPermission.getUrl(), MessageFormat.format(ROLE_STRING, str)); //将那个url 有那个角色对应 存入 section
                 }
             }
         }
@@ -73,7 +73,7 @@ public class MyShiroFilterFactoryBean extends ShiroFilterFactoryBean {
                 manager.getFilterChains().clear();
                 this.getFilterChainDefinitionMap().clear();
 
-                this.setFilterChainDefinitions(filterChainDefinitions);
+                this.setFilterChainDefinitions(filterChainDefinitions); //重置过滤链
 
                 Map<String, String> chains = this.getFilterChainDefinitionMap();
                 if (!CollectionUtils.isEmpty(chains)) {
@@ -83,7 +83,7 @@ public class MyShiroFilterFactoryBean extends ShiroFilterFactoryBean {
                         Map.Entry<String, String> entry = (Map.Entry) var12.next();
                         String url = (String) entry.getKey();
                         String chainDefinition = (String) entry.getValue();
-                        manager.createChain(url, chainDefinition);
+                        manager.createChain(url, chainDefinition);     //回复过滤链
                     }
                 }
 
