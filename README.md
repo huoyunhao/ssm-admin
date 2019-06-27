@@ -101,7 +101,7 @@ git clone xx或者Download Zip
 **npm install**
 // serve with hot reload at localhost:8080
 **npm run dev**
-* 数据库：ssm/src/main/resources/db/loop_admin_v0.sql
+* 数据库：ssm/src/main/resources/db/loop_admin_v0.sql   默认前端登录账号：superadmin   密码：123456
 * 数据库地址：ssm/src/main/resources/db.properties中修改数据库地址，账号，密码
 * shiro权限控制：ssm/src/main/resources/application.xml 配置shiro**不需要登录的路径**，
 匹配了四条
@@ -161,6 +161,8 @@ git clone xx或者Download Zip
 [后端地址](https://github.com/ayhyh/ssm-admin)
 
 [前端地址](https://github.com/ayhyh/ssm-admin-ui)
+
+[项目说明](https://www.jianshu.com/p/ea1fe005848c)
 
 ------
 ## 7 项目技术点
